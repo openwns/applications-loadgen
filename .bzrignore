@@ -1,0 +1,10 @@
+.sconsign.dblite
+.project
+addOn
+include
+build
+doxydoc
+config/pushMailRecipients.py
+config/private.py
+config/bversion.hpp
+.objs
