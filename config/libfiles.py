@@ -1,2 +1,6 @@
-srcFiles = dict()
-Return('srcFiles')
+libname = 'applications'
+srcFiles = []
+hppFiles = []
+pyconfigs = []
+dependencies = []
+Return('libname srcFiles hppFiles pyconfigs dependencies')
