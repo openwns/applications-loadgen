@@ -288,22 +288,24 @@ Session::sessionProbesCalculation()
   sessionOutgoingPacketThroughputProbe->put(outgoingPacketCounter / measuringDuration);
 
   if(receivedPacketNumber > 0)
+  {
+    MESSAGE_SINGLE(NORMAL, logger, "APPL: At the end a total of " << packetLossCounter
+        << " packets out of " << (receivedPacketNumber-packetsDuringSettlingTime) << " are lost.\n");
+
+    packetLossProbe->put(packetLossRatio);
+    if(packetLossRatio > maxLossRatio)
     {
-      MESSAGE_SINGLE(NORMAL, logger, "APPL: At the end a total of " << packetLossCounter
-		     << " packets out of " << (receivedPacketNumber-packetsDuringSettlingTime) << " are lost.\n");
-
-      packetLossProbe->put(packetLossRatio);
+        userSatisfactionProbe->put(0);
     }
-
-
-  if(packetLossRatio > maxLossRatio)
+    else
     {
-      userSatisfactionProbe->put(0);
+        userSatisfactionProbe->put(1);
     }
+  }
   else
-    {
-      userSatisfactionProbe->put(1);
-    }
+  {
+    userSatisfactionProbe->put(0);
+  }
 }
 
 void
