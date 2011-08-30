@@ -222,16 +222,5 @@ WWW::onConnectionEstablished(wns::service::tl::Connection* _connection)
 
   MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established!");
 
-  now = wns::simulator::getEventScheduler()->getTime();
-
-  if(now >= settlingTime)
-    {
-      connectionProbe->put(1);
-    }
-  else
-    {
-      connectionProbe->put(0);
-    }
-
   onTimeout(sendtimeout);
 }

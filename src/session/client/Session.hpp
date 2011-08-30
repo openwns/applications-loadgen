@@ -51,6 +51,7 @@ namespace applications { namespace session { namespace client {
 	/* Used to avoid that all applications will start parallel. */
 	wns::distribution::Distribution* sessionDelayDistribution;
 	wns::simulator::Time sessionDelay;
+    wns::simulator::Time establishedAt;
       };
     } // namespace client
   } // namespace session

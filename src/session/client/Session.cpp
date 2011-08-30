@@ -36,7 +36,8 @@ STATIC_FACTORY_REGISTER_WITH_CREATOR(applications::session::client::Session,
 Session::Session(const wns::pyconfig::View& _pyco):
   session::Session(_pyco),
   sessionDelayDistribution(NULL),
-  sessionDelay(0.0)
+  sessionDelay(0.0),
+  establishedAt(0.0)
 {
   wns::pyconfig::View sDDConfig(_pyco, "sessionDelay");
   std::string sDDName = sDDConfig.get<std::string>("__plugin__");
@@ -67,13 +68,24 @@ Session::onShutdown()
   cancelAllTimeouts();
 
   if(connection != NULL)
+  {
+    binding->releaseBinding(connection);
+    if(establishedAt <= settlingTime)
     {
-      binding->releaseBinding(connection);
+      MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established but after probing started!");
+      connectionProbe->put(0);
     }
+    else
+    {
+      MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection was succesfully established!");
+      connectionProbe->put(1);
+    }        
+  }
   else
-    {
+  {
       MESSAGE_SINGLE(NORMAL, logger, "APPL: No connection was established at the end of the session!");
-    }
+      connectionProbe->put(0);
+  }
 
   applications::session::Session::sessionProbesCalculation();
 }

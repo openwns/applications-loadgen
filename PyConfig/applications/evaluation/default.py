@@ -236,10 +236,9 @@ def installEvaluation(sim,
     servers.getLeafs().appendChildren(Moments(name = sourceName, description = 'Amount of satisfied users'))
     clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Amount of satisfied users'))
 
-
+    # We do not need a SettlingTimeGuard here because connections should be established before the settling time
     sourceName = probePrefix + 'connectionEstablished'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     clients = node.appendChildren(SeparateOnlyClients())
     clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Number of established connections'))
     clients.getLeafs().appendChildren(SeparateBySessionTypes())
