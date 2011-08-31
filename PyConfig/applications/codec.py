@@ -108,39 +108,39 @@ class G711(Codec):
 class AMR_4_75(Codec):
     # bit-rate = 4.75 kbit/s
     def __init__(self):
-        super(AMR_4_75, self).__init__(0.02, 95, 8)
+        super(AMR_4_75, self).__init__(0.02, 95, 40)
 
 class AMR_5_15(Codec):
     # bit-rate = 5.15 kbit/s
     def __init__(self):
-        super(AMR_5_15, self).__init__(0.02, 103, 8)
+        super(AMR_5_15, self).__init__(0.02, 103, 40)
 
 class AMR_5_9(Codec):
     # bit-rate = 5.9 kbit/s
     def __init__(self):
-        super(AMR_5_9, self).__init__(0.02, 118, 8)
+        super(AMR_5_9, self).__init__(0.02, 118, 40)
 
 class AMR_6_7(Codec):
     # bit-rate = 6.7 kbit/s
     def __init__(self):
-        super(AMR_6_7, self).__init__(0.02, 134, 8)
+        super(AMR_6_7, self).__init__(0.02, 134, 40)
 
 class AMR_7_4(Codec):
     # bit-rate = 7.4 kbit/s
     def __init__(self):
-        super(AMR_7_4, self).__init__(0.02, 148, 8)
+        super(AMR_7_4, self).__init__(0.02, 148, 40)
 
 class AMR_7_95(Codec):
     # bit-rate = 7.95 kbit/s
     def __init__(self):
-        super(AMR_7_95, self).__init__(0.02, 159, 8)
+        super(AMR_7_95, self).__init__(0.02, 159, 40)
 
 class AMR_10_2(Codec):
     # bit-rate = 10.2 kbit/s
     def __init__(self):
-        super(AMR_10_2, self).__init__(0.02, 204, 8)
+        super(AMR_10_2, self).__init__(0.02, 204, 40)
 
 class AMR_12_2(Codec):
     # bit-rate = 12.2 kbit/s
     def __init__(self):
-        super(AMR_12_2, self).__init__(0.02, 244, 8)
+        super(AMR_12_2, self).__init__(0.02, 244, 40)
