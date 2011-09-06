@@ -70,7 +70,7 @@ Session::onShutdown()
   if(connection != NULL)
   {
     binding->releaseBinding(connection);
-    if(establishedAt <= settlingTime)
+    if(establishedAt > settlingTime)
     {
       MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established but after probing started!");
       connectionProbe->put(0);

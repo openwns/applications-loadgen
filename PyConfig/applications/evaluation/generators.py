@@ -29,6 +29,7 @@
 
 from openwns.evaluation import * 
 import default
+import applications
 
 class SeparateOnlyServers(ITreeNodeGenerator):
     """ Separate only Servers.
@@ -47,8 +48,18 @@ class SeparateOnlyClients(ITreeNodeGenerator):
 class SeparateBySessionTypes(ITreeNodeGenerator):
     """ Separate by type of session.
     """
+
+    names = []
+    keys = []    
+
+    def __init__(self, sesTypes = applications.sesStrTypes.keys()):
+        sesStrTypesSet = set(sesTypes)
+        for s in sesStrTypesSet:
+            self.names.append(s)
+            self.keys.append(applications.sesStrTypes[s])
+
     def __call__(self, pathname):
-        for node in Enumerated(by = 'Appl.SessionType', keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], names = ['CBR', 'Email', 'FTP', 'VoIP', 'Video', 'VideoTelephony', 'VideoTrace', 'WWW', 'WiMAXVideo', 'WiMAXVideoTelephony'], format='%s')(pathname):
+        for node in Enumerated(by = 'Appl.SessionType', keys = self.keys, names = self.names, format='%s')(pathname):
             yield node
 
 

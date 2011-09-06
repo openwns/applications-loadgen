@@ -67,8 +67,10 @@ Session::Session(const wns::pyconfig::View& _pyco) :
   packetNumber(0),
   lastPacketNumber(0),
   packetLossCounter(0),
+  delayLossCounter(0),
   packetsDuringSettlingTime(0),
   packetLossRatio(0.0),
+  delayLossRatio(0.0),
   maxLossRatio(1.0),
   receivedPacketNumber(0),
   packetFrom("Session")
@@ -175,6 +177,8 @@ Session::registerComponent(applications::node::component::Component* _component,
 
   packetLossProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.session.incoming.packetLoss"));
 
+  delayLossProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.session.incoming.delayLoss"));
+
   userSatisfactionProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.session.userSatisfaction"));
 
 
@@ -237,10 +241,12 @@ Session::incomingProbesCalculation(const wns::osi::PDUPtr& _pdu)
 
       if(packetDelay > maxDelay)
 	{
-	  packetLossCounter += 1;
+	  packetLossCounter += 1; 
+      delayLossCounter += 1;
 	}
 
       packetLossRatio = (double)packetLossCounter / (double)(receivedPacketNumber - packetsDuringSettlingTime);
+      delayLossRatio = (double)delayLossCounter / (double)(receivedPacketNumber - packetsDuringSettlingTime);
     }
   else
     {
@@ -293,6 +299,7 @@ Session::sessionProbesCalculation()
         << " packets out of " << (receivedPacketNumber-packetsDuringSettlingTime) << " are lost.\n");
 
     packetLossProbe->put(packetLossRatio);
+    delayLossProbe->put(delayLossRatio);
     if(packetLossRatio > maxLossRatio)
     {
         userSatisfactionProbe->put(0);

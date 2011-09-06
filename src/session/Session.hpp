@@ -193,6 +193,7 @@ namespace applications {
       wns::probe::bus::ContextCollectorPtr measuringDurationProbe;
       wns::probe::bus::ContextCollectorPtr iatProbe;
       wns::probe::bus::ContextCollectorPtr packetLossProbe;
+      wns::probe::bus::ContextCollectorPtr delayLossProbe;
       wns::probe::bus::ContextCollectorPtr userSatisfactionProbe;
       wns::probe::bus::ContextCollectorPtr connectionProbe;
       SessionType sessionType;
@@ -223,11 +224,13 @@ namespace applications {
       Bit incomingPacketSizeCounter;
       Bit outgoingPacketSizeCounter;
       double packetLossRatio;
+      double delayLossRatio;
       double maxLossRatio;
 
       long int packetNumber;
       long int lastPacketNumber;
       long int packetLossCounter;
+      long int delayLossCounter;
       long int receivedPacketNumber;
       long int packetsDuringSettlingTime;
 
