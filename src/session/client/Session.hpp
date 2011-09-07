@@ -56,15 +56,6 @@ namespace applications { namespace session { namespace client {
 	wns::simulator::Time sessionDelay;
     wns::simulator::Time establishedAt;
 
-    /* 
-    Used to delay traffic start after connection establishment
-    so other nodes can establish their connection without distraction.
-    This only delays traffic from the client, server could be already
-    sending. This doeas not help if a shared full-duplex medium is used 
-    (e.g. 802.11 WLAN).
-    */
-	wns::distribution::Distribution* trafficDelayDistribution;
-
       };
     } // namespace client
   } // namespace session

@@ -39,11 +39,8 @@ class ClientSessions(object):
     logger = None
     sessionDelay = None
     settlingTime = None
-    trafficDelay = None
-    def __init__(self, settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0,
-        minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
+    def __init__(self, settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0):
         self.sessionDelay = openwns.distribution.Uniform(minStartDelay, maxStartDelay)
-        self.trafficDelay = openwns.distribution.Uniform(minTrafficDelay, maxTrafficDelay)
         self.settlingTime = settlingTime
 
 class CBR(ClientSessions):
@@ -51,10 +48,8 @@ class CBR(ClientSessions):
     packetSize = None
     bitRate = None
     def __init__(self, packetSize = 512, bitRate = 64, settlingTime = 1.0, 
-                 minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None,
-                 minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(CBR, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None):
+        super(CBR, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.packetSize = openwns.distribution.Fixed(packetSize)
         self.bitRate = openwns.distribution.Fixed(bitRate)
         self.logger = openwns.logger.Logger("APPL", "CBR", True, parentLogger)
@@ -76,9 +71,8 @@ class Email(ClientSessions):
                  shapeOfEmailWritingTime = 1.1, scaleOfEmailWritingTime = 2.0,
                  shapeOfEmailReadingTime = 1.1, scaleOfEmailReadingTime = 2.0,
                  settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0, 
-                 parentLogger = None, minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(Email, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 parentLogger = None):
+        super(Email, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.numberOfEmails = openwns.distribution.ABOVE(openwns.distribution.
                                                          LogNorm(meanOfNumberOfEmails,
                                                                  sigmaOfNumberOfEmails),
@@ -114,10 +108,8 @@ class FTP(ClientSessions):
     settlingTime = None
     def __init__(self, meanOfReadingTime = 180.0, meanOfAmountOfData = 2.0,
                  sigmaOfAmountOfData = 0.722, settlingTime = 1.0, minStartDelay = 0.1,
-                 maxStartDelay = 1.0, parentLogger = None,
-                 minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(FTP, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 maxStartDelay = 1.0, parentLogger = None):
+        super(FTP, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.readingTime = openwns.distribution.NegExp(meanOfReadingTime)
         self.amountOfData = openwns.distribution.ABOVE(openwns.distribution.
                                                        BELOW(openwns.distribution.
@@ -130,10 +122,8 @@ class FTP(ClientSessions):
 class Video(ClientSessions):
     __plugin__ = "client.Video"
     settlingTime = None
-    def __init__(self, settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None,
-                 minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(Video, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+    def __init__(self, settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None):
+        super(Video, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.logger = openwns.logger.Logger("APPL", "Video", True, parentLogger)
 
 
@@ -157,9 +147,8 @@ class VoIP(ClientSessions):
     maxLossRatio = None
     settlingTime = None
     def __init__(self, codecType = GSM(), comfortNoiseChoice = True, settlingTime = 1.0, minStartDelay = 0.1,
-                 maxStartDelay = 1.0, parentLogger = None, minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(VoIP, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 maxStartDelay = 1.0, parentLogger = None):
+        super(VoIP, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.codec = codecType
         self.stateTransition = openwns.distribution.Uniform(0.0, 1.0)
         self.comfortNoise = comfortNoiseChoice
@@ -193,9 +182,8 @@ class VideoTelephony(ClientSessions):
     settlingTime = None
     def __init__(self, voiceCodecType = GSM(), comfortNoiseChoice = True, videoCodecType = 'MPEG4',
                  formatType = 'QCIF', qualityChoice = '081014', settlingTime = 1.0, minStartDelay = 0.1,
-                 maxStartDelay = 1.0, parentLogger = None, minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(VideoTelephony, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 maxStartDelay = 1.0, parentLogger = None):
+        super(VideoTelephony, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.voiceCodec = voiceCodecType
         self.stateTransition = openwns.distribution.Uniform(0.0, 1.0)
         self.comfortNoise = comfortNoiseChoice
@@ -231,10 +219,8 @@ class VideoTrace(ClientSessions):
     settlingTime = None
     def __init__(self, genreChoice = 'Movies', codecChoice = 'MPEG4',
                  formatChoice = 'QCIF', rateControlChoice = 'VBR', qualityChoice = '30-30-30',
-                 settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None,
-                 minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(VideoTrace, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None):
+        super(VideoTrace, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.genre = genreChoice
         self.codec = codecChoice
         self.format = formatChoice
@@ -264,9 +250,8 @@ class WWW(ClientSessions):
     def __init__(self, meanOfReadingTime = 30.0, meanOfParsingTime = 0.13,
                  shapeOfEmbeddedObjects = 1.1, scaleOfEmbeddedObjects = 2.0,
                  settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0,
-                 parentLogger = None, minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(WWW, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 parentLogger = None):
+        super(WWW, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.readingTime = openwns.distribution.NegExp(meanOfReadingTime)
         self.parsingTime = openwns.distribution.NegExp(meanOfParsingTime)
         self.embeddedObjectsPerPage = openwns.distribution.ABOVE(openwns.distribution.
@@ -283,9 +268,8 @@ class WiMAXVideo(ClientSessions):
     settlingTime = None
     maxLossRatio = None
     def __init__(self, settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0, 
-                 parentLogger = None, minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(WiMAXVideo, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 parentLogger = None):
+        super(WiMAXVideo, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.maxDelay = 5.0
         self.maxLossRatio = 0.02
         self.logger = openwns.logger.Logger("APPL", "WiMAXVideo", True, parentLogger)
@@ -311,10 +295,8 @@ class WiMAXVideoTelephony(ClientSessions):
                  framesPerSecond = 25.0, scaleOfIFrame = 5.15, shapeOfIFrame = 863.0,
                  shiftOfIFrameSize = 3949.0, meanOfBFrameSize = 147.0, sigmaOfBFrameSize = 74.0,
                  meanOfPFrameSize = 259.0, sigmaOfPFrameSize = 134.0, settlingTime = 1.0,
-                 minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None,
-                 minTrafficDelay = 0.0, maxTrafficDelay = 0.0):
-        super(WiMAXVideoTelephony, self).__init__(settlingTime, minStartDelay, maxStartDelay, 
-                minTrafficDelay, maxTrafficDelay)
+                 minStartDelay = 0.1, maxStartDelay = 1.0, parentLogger = None):
+        super(WiMAXVideoTelephony, self).__init__(settlingTime, minStartDelay, maxStartDelay)
         self.codec = codecType
         self.stateTransition = openwns.distribution.Uniform(0.0, 1.0)
         self.comfortNoise = comfortNoiseChoice

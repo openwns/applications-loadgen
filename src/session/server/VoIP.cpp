@@ -37,7 +37,8 @@ VoIP::VoIP(const wns::pyconfig::View& _pyco) :
   Session(_pyco),
   stateTransitionDistribution(NULL),
   firstPacketNumber(true),
-  cnCounter(0)
+  cnCounter(0),
+  trafficStartDelay(_pyco.get<wns::simulator::Time>("trafficStartDelay"))
 {
   wns::pyconfig::View sTVConfig(_pyco, "stateTransition");
   std::string sTVName = sTVConfig.get<std::string>("__plugin__");
@@ -95,10 +96,13 @@ VoIP::onData(const wns::osi::PDUPtr& _pdu)
     {
       firstPacketDelay = packetDelay;
 
-      onTimeout(sendtimeout);
+      MESSAGE_SINGLE(NORMAL, logger, "APPL: Traffic will start in " 
+        << trafficStartDelay << "s.");
+
+      setTimeout(sendtimeout, trafficStartDelay);
       voIPState = inactive;
       cnCounter = 1;
-      setTimeout(statetransitiontimeout, 0.02);
+      setTimeout(statetransitiontimeout, 0.02 + trafficStartDelay);
     }
 }
 

@@ -43,10 +43,6 @@ Session::Session(const wns::pyconfig::View& _pyco):
   std::string sDDName = sDDConfig.get<std::string>("__plugin__");
   sessionDelayDistribution = wns::distribution::DistributionFactory::creator(sDDName)->create(sDDConfig);
 
-  wns::pyconfig::View tDDConfig(_pyco, "trafficDelay");
-  std::string tDDName = tDDConfig.get<std::string>("__plugin__");
-  trafficDelayDistribution = wns::distribution::DistributionFactory::creator(tDDName)->create(tDDConfig);
-
   stationType = CLIENT;
 }
 
@@ -71,7 +67,12 @@ Session::onShutdown()
 
   cancelAllTimeouts();
 
-  if(connection != NULL)
+  /* 
+  First condition checks if L2 connection was established.
+  Second one checks if at least one PDU got through to create
+  the server session.
+  */
+  if(connection != NULL && receivedPacketNumber > 0)
   {
     binding->releaseBinding(connection);
     if(establishedAt > settlingTime)
@@ -101,10 +102,7 @@ Session::onConnectionEstablished(wns::service::tl::Connection* _connection)
   connection = _connection;
   establishedAt = wns::simulator::getEventScheduler()->getTime();
 
-  wns::simulator::Time tDelay = (*trafficDelayDistribution)();
+  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established!");
 
-  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established! Traffic will start in " 
-    << tDelay << "s");
-
-  setTimeout(statetimeout, tDelay);
+  onTimeout(statetimeout);
 }

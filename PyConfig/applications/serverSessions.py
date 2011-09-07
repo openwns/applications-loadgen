@@ -141,7 +141,7 @@ class VoIP(ServerSessions):
     maxDelay = None
     maxLossRatio = None
     def __init__(self, codecType = GSM(), comfortNoiseChoice = True,
-                 settlingTime = 1.0, parentLogger = None):
+                 settlingTime = 1.0, trafficStartDelay = 0.0, parentLogger = None):
         super(VoIP, self).__init__(settlingTime)
         self.codec = codecType
         self.stateTransition = openwns.distribution.Uniform(0.0, 1.0)
@@ -151,6 +151,7 @@ class VoIP(ServerSessions):
         self.comfortNoisePacketSize = codecType.cnPacketSize # take from codec specification
         self.maxDelay = 0.05
         self.maxLossRatio = 0.02
+        self.trafficStartDelay = trafficStartDelay
         self.logger = openwns.logger.Logger("APPL", "VoIP", True, parentLogger)
 
 

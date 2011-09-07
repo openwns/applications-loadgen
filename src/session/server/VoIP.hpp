@@ -65,6 +65,7 @@ namespace applications { namespace session { namespace server {
 	applications::session::server::VoIPState voIPState;
 
 	bool firstPacketNumber;
+    wns::simulator::Time trafficStartDelay;
 
       };
     } // namespace server
