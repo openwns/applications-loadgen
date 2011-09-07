@@ -56,9 +56,6 @@ namespace applications { namespace session { namespace client {
 	void
 	onTimeout(const Timeout& _t);
 
-	void
-	onConnectionEstablished(wns::service::tl::Connection* _connection);
-
       private:
 	applications::session::client::ClientFTPState ftpState;
 

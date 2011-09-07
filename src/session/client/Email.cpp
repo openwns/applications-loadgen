@@ -140,14 +140,14 @@ Email::onData(const wns::osi::PDUPtr& _pdu)
     {
       state = running;
 
-      onTimeout(receivetimeout);
+      onTimeout(statetimeout);
     }
 }
 
 void
 Email::onTimeout(const Timeout& _t)
 {
-  if(_t == receivetimeout)
+  if(_t == statetimeout)
     {
       if(emailState1 == receiving)
 	{
@@ -158,7 +158,7 @@ Email::onTimeout(const Timeout& _t)
 
 	  if(lastPacket == false)
 	    {
-	      setTimeout(receivetimeout, readingTime);
+	      setTimeout(statetimeout, readingTime);
 
 	      emailState1 = reading;
 	      state = running;
@@ -399,14 +399,3 @@ Email::onTimeout(const Timeout& _t)
     }
 }
 
-void
-Email::onConnectionEstablished(wns::service::tl::Connection* _connection)
-{
-  /* Connection is ready, so start sending after session start delay. */
-  connection = _connection;
-  establishedAt = wns::simulator::getEventScheduler()->getTime();
-
-  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established!");
-
-  onTimeout(receivetimeout);
-}

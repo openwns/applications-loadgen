@@ -44,9 +44,6 @@ namespace applications { namespace session { namespace client {
 	void
 	onData(const wns::osi::PDUPtr& _pdu);
 
-	void
-	onConnectionEstablished(wns::service::tl::Connection* _connection);
-
       private:
 	wns::distribution::Distribution* packetSizeDistribution;
 	wns::distribution::Distribution* bitRateDistribution;

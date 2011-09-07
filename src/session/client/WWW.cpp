@@ -115,7 +115,7 @@ WWW::onData(const wns::osi::PDUPtr& _pdu)
 
       MESSAGE_SINGLE(NORMAL, logger, "APPL: Embedded object received. Readingtime = " << readingTime << ".");
 
-      setTimeout(sendtimeout, readingTime);
+      setTimeout(statetimeout, readingTime);
     }
   else
     {
@@ -128,7 +128,7 @@ WWW::onData(const wns::osi::PDUPtr& _pdu)
 void
 WWW::onTimeout(const Timeout& _t)
 {
-  if(_t == sendtimeout)
+  if(_t == statetimeout)
     {
       if(mainObject == false)
 	{
@@ -195,7 +195,7 @@ WWW::onTimeout(const Timeout& _t)
 
       MESSAGE_SINGLE(NORMAL, logger, "APPL: Main object received.");
 
-      setTimeout(sendtimeout, parsingTime);
+      setTimeout(statetimeout, parsingTime);
     }
   else if(_t == connectiontimeout)
     {
@@ -214,14 +214,3 @@ WWW::onTimeout(const Timeout& _t)
     }
 }
 
-void
-WWW::onConnectionEstablished(wns::service::tl::Connection* _connection)
-{
-  /* Connection is ready, so start sending after session start delay. */
-  connection = _connection;
-  establishedAt = wns::simulator::getEventScheduler()->getTime();
-
-  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established!");
-
-  onTimeout(sendtimeout);
-}

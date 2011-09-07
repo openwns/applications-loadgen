@@ -43,6 +43,10 @@ Session::Session(const wns::pyconfig::View& _pyco):
   std::string sDDName = sDDConfig.get<std::string>("__plugin__");
   sessionDelayDistribution = wns::distribution::DistributionFactory::creator(sDDName)->create(sDDConfig);
 
+  wns::pyconfig::View tDDConfig(_pyco, "trafficDelay");
+  std::string tDDName = tDDConfig.get<std::string>("__plugin__");
+  trafficDelayDistribution = wns::distribution::DistributionFactory::creator(tDDName)->create(tDDConfig);
+
   stationType = CLIENT;
 }
 
@@ -88,4 +92,19 @@ Session::onShutdown()
   }
 
   applications::session::Session::sessionProbesCalculation();
+}
+
+void
+Session::onConnectionEstablished(wns::service::tl::Connection* _connection)
+{
+  /* Connection is ready, so start sending after session start delay. */
+  connection = _connection;
+  establishedAt = wns::simulator::getEventScheduler()->getTime();
+
+  wns::simulator::Time tDelay = (*trafficDelayDistribution)();
+
+  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established! Traffic will start in " 
+    << tDelay << "s");
+
+  setTimeout(statetimeout, tDelay);
 }

@@ -52,9 +52,6 @@ namespace applications { namespace session { namespace client { namespace wimax 
 	  void
 	  onTimeout(const Timeout& _t);
 
-	  void
-	  onConnectionEstablished(wns::service::tl::Connection* _connection);
-
 	private:
 	  /* in sec. */
 	  wns::simulator::Time stateDuration;

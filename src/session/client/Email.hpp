@@ -61,9 +61,6 @@ namespace applications { namespace session { namespace client {
 	void
 	onTimeout(const Timeout& _t);
 
-	void
-	onConnectionEstablished(wns::service::tl::Connection* _connection);
-
       private:
 	/* According to "IEEE 802.16m Evaluation Methodology Document(2009), Page 121-122,
 	   section 10.7" the mean number of sent emails every day is 14. */

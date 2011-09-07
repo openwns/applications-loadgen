@@ -47,9 +47,6 @@ namespace applications { namespace session { namespace client {
 	void
 	onTimeout(const Timeout& _t);
 
-	void
-	onConnectionEstablished(wns::service::tl::Connection* _connection);
-
       private:
 	/* Acording to "IEEE 802.16m Evaluation Methodology Document(2009), Page 108-109,
 	   section 10.1" the mean parsing time for the main page is 0.13sec.. The values

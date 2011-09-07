@@ -111,15 +111,3 @@ Video::onTimeout(const Timeout& _t)
     }
 }
 
-
-void
-Video::onConnectionEstablished(wns::service::tl::Connection* _connection)
-{
-  /* Connection is ready, so start sending after session start delay. */
-  connection = _connection;
-  establishedAt = wns::simulator::getEventScheduler()->getTime();
-
-  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established!");
-
-  onTimeout(statetimeout);
-}

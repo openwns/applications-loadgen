@@ -345,7 +345,7 @@ VideoTelephony::onTimeout(const Timeout& _t)
     {
       applications::session::Session::onTimeout(_t);
     }
-  else if(_t == calltimeout)
+  else if(_t == statetimeout)
     {
       /* Start with calling the server. */
       applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(comfortNoisePacketSize), pyco);
@@ -370,15 +370,3 @@ VideoTelephony::onTimeout(const Timeout& _t)
     }
 }
 
-
-void
-VideoTelephony::onConnectionEstablished(wns::service::tl::Connection* _connection)
-{
-  /* Connection is ready, so start sending after session start delay. */
-  connection = _connection;
-  establishedAt = wns::simulator::getEventScheduler()->getTime();
-
-  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established!");
-
-  onTimeout(calltimeout);
-}

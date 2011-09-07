@@ -47,9 +47,6 @@ namespace applications { namespace session { namespace client { namespace wimax 
 	  void
 	  onTimeout(const Timeout& _t);
 
-	  void
-	  onConnectionEstablished(wns::service::tl::Connection* _connection);
-
 	};
       }// namespace wimax
     } // namespace client

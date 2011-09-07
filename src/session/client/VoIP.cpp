@@ -203,7 +203,7 @@ VoIP::onTimeout(const Timeout& _t)
     {
       applications::session::Session::onTimeout(_t);
     }
-  else if(_t == calltimeout)
+  else if(_t == statetimeout)
     {
       /* Start with calling the server. */
       MESSAGE_SINGLE(NORMAL, logger, "APPL: Calling the server!");
@@ -230,17 +230,5 @@ VoIP::onTimeout(const Timeout& _t)
     }
 }
 
-
-void
-VoIP::onConnectionEstablished(wns::service::tl::Connection* _connection)
-{
-  /* Connection is ready. */
-  connection = _connection;
-  establishedAt = wns::simulator::getEventScheduler()->getTime();
-
-  MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established!");
-
-  onTimeout(calltimeout);
-}
 
 
