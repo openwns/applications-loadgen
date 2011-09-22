@@ -105,8 +105,6 @@ CBR::onTimeout(const Timeout& _t)
       m << ", bitRate = " << bitRate;
       MESSAGE_END();
 
-      applications::session::Session::outgoingProbesCalculation();
-
       applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
 
       applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
@@ -118,6 +116,8 @@ CBR::onTimeout(const Timeout& _t)
       wns::osi::PDUPtr pdu(applicationPDU);
 
       MESSAGE_SINGLE(NORMAL, logger, "APPL: Generated pdu with " << packetSize << " bits.");
+
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
 

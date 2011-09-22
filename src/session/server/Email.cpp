@@ -158,8 +158,6 @@ Email::onTimeout(const Timeout& _t)
 	  applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
@@ -171,6 +169,7 @@ Email::onTimeout(const Timeout& _t)
 	      /* sending last email */
 	      applicationPDU->setLastPacket(true);
 	      wns::osi::PDUPtr pdu(applicationPDU);
+          applications::session::Session::outgoingProbesCalculation(pdu);
 
 	      connection->sendData(pdu);
 
@@ -180,6 +179,7 @@ Email::onTimeout(const Timeout& _t)
 	    {
 	      numberOfEmails = numberOfEmails - 1;
 	      wns::osi::PDUPtr pdu(applicationPDU);
+          applications::session::Session::outgoingProbesCalculation(pdu);
 
 	      connection->sendData(pdu);
 	    }
@@ -193,13 +193,12 @@ Email::onTimeout(const Timeout& _t)
 	  applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 
@@ -215,13 +214,12 @@ Email::onTimeout(const Timeout& _t)
 	  applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 
@@ -237,13 +235,12 @@ Email::onTimeout(const Timeout& _t)
 	  applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 
@@ -260,8 +257,6 @@ Email::onTimeout(const Timeout& _t)
       applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
       applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-      applications::session::Session::outgoingProbesCalculation();
-
       packetNumber = 1;
       applicationPDU->setPacketNumber(packetNumber, packetFrom);
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
@@ -269,6 +264,7 @@ Email::onTimeout(const Timeout& _t)
       applicationPDU->setLastPacket(true);
 
       wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
       state = idle;

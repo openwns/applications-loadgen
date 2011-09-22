@@ -39,9 +39,11 @@ class ClientSessions(object):
     logger = None
     sessionDelay = None
     settlingTime = None
-    def __init__(self, settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0):
+    probeEndTime = None
+    def __init__(self, settlingTime = 1.0, minStartDelay = 0.1, maxStartDelay = 1.0, probeEndTime = 1E12):
         self.sessionDelay = openwns.distribution.Uniform(minStartDelay, maxStartDelay)
         self.settlingTime = settlingTime
+        self.probeEndTime = probeEndTime
 
 class CBR(ClientSessions):
     __plugin__ = "client.CBR"
@@ -147,8 +149,8 @@ class VoIP(ClientSessions):
     maxLossRatio = None
     settlingTime = None
     def __init__(self, codecType = GSM(), comfortNoiseChoice = True, settlingTime = 1.0, minStartDelay = 0.1,
-                 maxStartDelay = 1.0, parentLogger = None):
-        super(VoIP, self).__init__(settlingTime, minStartDelay, maxStartDelay)
+                 maxStartDelay = 1.0, parentLogger = None, probeEndTime = 1E12):
+        super(VoIP, self).__init__(settlingTime, minStartDelay, maxStartDelay, probeEndTime)
         self.codec = codecType
         self.stateTransition = openwns.distribution.Uniform(0.0, 1.0)
         self.comfortNoise = comfortNoiseChoice

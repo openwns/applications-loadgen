@@ -89,6 +89,7 @@ VideoTrace::onTimeout(const Timeout& _t)
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
       wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
 

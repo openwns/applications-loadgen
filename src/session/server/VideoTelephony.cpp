@@ -213,7 +213,6 @@ VideoTelephony::onTimeout(const Timeout& _t)
       applications::session::Session::iatProbesCalculation();
 
       packetSize = voicePacketSize;
-      applications::session::Session::outgoingProbesCalculation();
 
       applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(voicePacketSize), pyco);
       applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
@@ -223,6 +222,7 @@ VideoTelephony::onTimeout(const Timeout& _t)
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
       wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
     }
@@ -234,7 +234,6 @@ VideoTelephony::onTimeout(const Timeout& _t)
       applications::session::Session::iatProbesCalculation();
 
       packetSize = comfortNoisePacketSize;
-      applications::session::Session::outgoingProbesCalculation();
 
       applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(comfortNoisePacketSize), pyco);
       applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
@@ -244,6 +243,7 @@ VideoTelephony::onTimeout(const Timeout& _t)
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
       wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
     }
@@ -529,13 +529,12 @@ VideoTelephony::logNormalProjectedFarima(std::deque<double> _x, std::deque<doubl
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   ++packetNumber;
   applicationPDU->setPacketNumber(packetNumber, packetFrom);
   MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 }

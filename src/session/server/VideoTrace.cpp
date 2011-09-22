@@ -107,8 +107,6 @@ VideoTrace::onTimeout(const Timeout& _t)
 	  applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  if(firstPacketNumber == true)
 	    {
 	      packetNumber = 1;
@@ -125,6 +123,7 @@ VideoTrace::onTimeout(const Timeout& _t)
 	    }
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 

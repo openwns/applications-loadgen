@@ -51,6 +51,7 @@ Session::Session(const wns::pyconfig::View& _pyco) :
   iatStart(0.0),
   iatEnd(0.0),
   settlingTime(0.0),
+  probeEndTime(_pyco.get<wns::simulator::Time>("probeEndTime")),
   firstIatProbe(true),
   measuringDuration(0.0),
   windowedIncomingBitThroughput(0.0),
@@ -69,6 +70,8 @@ Session::Session(const wns::pyconfig::View& _pyco) :
   packetLossCounter(0),
   delayLossCounter(0),
   packetsDuringSettlingTime(0),
+  receivedPackets(0),
+  receivedOnTimePackets(0),
   packetLossRatio(0.0),
   delayLossRatio(0.0),
   maxLossRatio(1.0),
@@ -181,7 +184,6 @@ Session::registerComponent(applications::node::component::Component* _component,
 
   userSatisfactionProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.session.userSatisfaction"));
 
-
   connectionProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.connectionEstablished"));
 }
 
@@ -214,6 +216,10 @@ Session::incomingProbesCalculation(const wns::osi::PDUPtr& _pdu)
       assure(now >= static_cast<applications::session::PDU*>(_pdu.getPtr())->getCreationTime(), "Living in the past!");
 
       packetDelay = now - static_cast<applications::session::PDU*>(_pdu.getPtr())->getCreationTime();
+
+      applications::session::Session* sender = static_cast<applications::session::PDU*>(_pdu.getPtr())->getSender();
+      if(sender != NULL)
+        sender->onPDUReceivedByPeer(_pdu);
 
       packetDelayProbe->put(packetDelay);
       incomingPacketSizeProbe->put(incomingPacketSize);
@@ -258,15 +264,36 @@ Session::incomingProbesCalculation(const wns::osi::PDUPtr& _pdu)
 }
 
 void
-Session::outgoingProbesCalculation()
+Session::onPDUReceivedByPeer(const wns::osi::PDUPtr& _pdu)
+{
+  now = wns::simulator::getEventScheduler()->getTime();
+  wns::simulator::Time txTime;
+  txTime = static_cast<applications::session::PDU*>(_pdu.getPtr())->getCreationTime();
+
+  if(now < probeEndTime && txTime > settlingTime)
+  {
+    wns::simulator::Time delay = now - txTime;
+
+    receivedPackets++;
+    if(delay < maxDelay)
+    {
+       receivedOnTimePackets++;
+    }
+  }   
+}
+
+void
+Session::outgoingProbesCalculation(const wns::osi::PDUPtr& pdu)
 {
   now = wns::simulator::getEventScheduler()->getTime();
 
-  if(now > settlingTime)
+  static_cast<applications::session::PDU*>(pdu.getPtr())->setSender(this);
+
+  if(now > settlingTime && now < probeEndTime)
     {
       outgoingPacketCounter++;
 
-      outgoingPacketSize = packetSize;
+      outgoingPacketSize = pdu->getLengthInBits();
       outgoingPacketSizeCounter += outgoingPacketSize;
 
       windowedOutgoingPacketThroughput++;
@@ -293,6 +320,13 @@ Session::sessionProbesCalculation()
   sessionOutgoingBitThroughputProbe->put(outgoingPacketSizeCounter / measuringDuration);
   sessionOutgoingPacketThroughputProbe->put(outgoingPacketCounter / measuringDuration);
 
+  long int lost = outgoingPacketCounter - receivedOnTimePackets;
+
+  if(outgoingPacketCounter > 0 && double(lost) / double(outgoingPacketCounter) < maxLossRatio)
+    userSatisfactionProbe->put(1);
+  else
+    userSatisfactionProbe->put(0);
+
   if(receivedPacketNumber > 0)
   {
     MESSAGE_SINGLE(NORMAL, logger, "APPL: At the end a total of " << packetLossCounter
@@ -300,18 +334,6 @@ Session::sessionProbesCalculation()
 
     packetLossProbe->put(packetLossRatio);
     delayLossProbe->put(delayLossRatio);
-    if(packetLossRatio > maxLossRatio)
-    {
-        userSatisfactionProbe->put(0);
-    }
-    else
-    {
-        userSatisfactionProbe->put(1);
-    }
-  }
-  else
-  {
-    userSatisfactionProbe->put(0);
   }
 }
 

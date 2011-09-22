@@ -542,8 +542,6 @@ Video::logNormalProjectedFarima(std::deque<double> _x, std::deque<double> _phiol
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -560,6 +558,7 @@ Video::logNormalProjectedFarima(std::deque<double> _x, std::deque<double> _phiol
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 }
@@ -587,8 +586,6 @@ Video::logNormalPDF(double _logMean, double _logStd)
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -605,6 +602,7 @@ Video::logNormalPDF(double _logMean, double _logStd)
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 
@@ -644,8 +642,6 @@ Video::logNormalProjectedAR(double _y, double _phi, double _m, double _sqrValue,
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -662,6 +658,7 @@ Video::logNormalProjectedAR(double _y, double _phi, double _m, double _sqrValue,
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 
@@ -703,8 +700,6 @@ Video::logNormalProjectedARMA(double _y, double _phi, double _theta, double _m,
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -721,6 +716,7 @@ Video::logNormalProjectedARMA(double _y, double _phi, double _theta, double _m,
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 
@@ -781,8 +777,6 @@ Video::logNormalProjectedFDN(std::deque<double> _x, std::deque<double> _phiold, 
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -799,6 +793,7 @@ Video::logNormalProjectedFDN(std::deque<double> _x, std::deque<double> _phiold, 
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 }
@@ -829,8 +824,6 @@ Video::videoAR(double _y, double _phi, double _logMean, double _logStd)
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -847,6 +840,7 @@ Video::videoAR(double _y, double _phi, double _logMean, double _logStd)
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 
@@ -892,8 +886,6 @@ Video::videoFARIMA(std::deque<double> _x, std::deque<double> _phiold, double _y,
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -910,6 +902,7 @@ Video::videoFARIMA(std::deque<double> _x, std::deque<double> _phiold, double _y,
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 
@@ -957,8 +950,6 @@ Video::videoFDN(std::deque<double> _x, std::deque<double> _phiold, double _y,
   applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
   applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-  applications::session::Session::outgoingProbesCalculation();
-
   if(firstPacketNumber == true)
     {
       packetNumber = 1;
@@ -975,6 +966,7 @@ Video::videoFDN(std::deque<double> _x, std::deque<double> _phiold, double _y,
     }
 
   wns::osi::PDUPtr pdu(applicationPDU);
+  applications::session::Session::outgoingProbesCalculation(pdu);
 
   connection->sendData(pdu);
 

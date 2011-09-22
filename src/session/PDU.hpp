@@ -28,12 +28,15 @@
 #ifndef APPLICATIONS_SESSION_PDU_HPP
 #define APPLICATIONS_SESSION_PDU_HPP
 
-#include <APPLICATIONS/session/Session.hpp>
 #include <WNS/SmartPtr.hpp>
 #include <WNS/osi/PDU.hpp>
 #include <WNS/osi/PCI.hpp>
+#include <WNS/simulator/Time.hpp>
+#include <WNS/pyconfig/View.hpp>
 
 namespace applications { namespace session {
+
+class Session;
 
     class PDU :
     public wns::osi::PDU
@@ -86,6 +89,12 @@ namespace applications { namespace session {
       virtual std::string
       getPacketFrom();
 
+      void
+      setSender(applications::session::Session* sender);
+
+      applications::session::Session*
+      getSender();
+
     private:
       /**
        * @return The size of the %PDU in bit which is the sum of
@@ -106,6 +115,8 @@ namespace applications { namespace session {
       // TEST
       int packetNumber;
       std::string packetFrom;
+
+      applications::session::Session* sender;
     };
 
     /**

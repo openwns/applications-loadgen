@@ -82,13 +82,12 @@ Video::onTimeout(const Timeout& _t)
 
       applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-      applications::session::Session::outgoingProbesCalculation();
-
       packetNumber = 1;
       applicationPDU->setPacketNumber(packetNumber, packetFrom);
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
       wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
 

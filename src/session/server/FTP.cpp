@@ -84,13 +84,12 @@ FTP::onData(const wns::osi::PDUPtr& _pdu)
       applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
       applicationPDU->setRequest(false);
 
-      applications::session::Session::outgoingProbesCalculation();
-
       ++packetNumber;
       applicationPDU->setPacketNumber(packetNumber, packetFrom);
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
       wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
     }
@@ -108,13 +107,12 @@ FTP::onData(const wns::osi::PDUPtr& _pdu)
       applicationPDU->setRequest(true);
       applicationPDU->setLastPacket(true);
 
-      applications::session::Session::outgoingProbesCalculation();
-
       ++packetNumber;
       applicationPDU->setPacketNumber(packetNumber, packetFrom);
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
       wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
       connection->sendData(pdu);
     }
@@ -132,13 +130,12 @@ FTP::onTimeout(const Timeout& _t)
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 	  applicationPDU->setRequest(true);
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 
@@ -154,13 +151,12 @@ FTP::onTimeout(const Timeout& _t)
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 	  applicationPDU->setRequest(true);
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  packetNumber = 1;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 
@@ -177,13 +173,12 @@ FTP::onTimeout(const Timeout& _t)
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 	  applicationPDU->setRequest(true);
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 
@@ -200,13 +195,12 @@ FTP::onTimeout(const Timeout& _t)
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 	  applicationPDU->setRequest(true);
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 

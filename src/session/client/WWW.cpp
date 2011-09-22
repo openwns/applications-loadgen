@@ -144,8 +144,6 @@ WWW::onTimeout(const Timeout& _t)
 	  applications::session::PDU* applicationPDU = new applications::session::PDU(Bit(packetSize), pyco);
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  ++packetNumber;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
@@ -158,6 +156,7 @@ WWW::onTimeout(const Timeout& _t)
 	      applicationPDU->setLastPacket(true);
 	    }
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 	}
@@ -173,13 +172,12 @@ WWW::onTimeout(const Timeout& _t)
 	  applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 	  applicationPDU->setRequest(true);
 
-	  applications::session::Session::outgoingProbesCalculation();
-
 	  packetNumber = 1;
 	  applicationPDU->setPacketNumber(packetNumber, packetFrom);
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
 	  wns::osi::PDUPtr pdu(applicationPDU);
+      applications::session::Session::outgoingProbesCalculation(pdu);
 
 	  connection->sendData(pdu);
 

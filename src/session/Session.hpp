@@ -132,7 +132,7 @@ namespace applications {
       incomingProbesCalculation(const wns::osi::PDUPtr& _pdu);
 
       virtual void
-      outgoingProbesCalculation();
+      outgoingProbesCalculation(const wns::osi::PDUPtr& _pdu);
 
       virtual void
       sessionProbesCalculation();
@@ -146,6 +146,9 @@ namespace applications {
       virtual std::string
       doToString() const;
 
+      virtual void
+      onPDUReceivedByPeer(const wns::osi::PDUPtr& _pdu);
+    
     protected:
 
       /* WARNING: sessionStartTime should not be greater than settlingTime */
@@ -207,6 +210,7 @@ namespace applications {
       wns::simulator::Time iatStart;
       wns::simulator::Time iatEnd;
       wns::simulator::Time settlingTime;
+      wns::simulator::Time probeEndTime;
       bool firstIatProbe;
 
       /* counter variables for windowed probes*/
@@ -219,6 +223,8 @@ namespace applications {
       /* counter variables for whole session */
       int incomingPacketCounter;
       int outgoingPacketCounter;
+      long int receivedPackets;
+      long int receivedOnTimePackets;
       wns::simulator::Time measuringDuration;
       wns::simulator::Time sessionRunTime;
       Bit incomingPacketSizeCounter;

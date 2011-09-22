@@ -36,8 +36,10 @@ import sys
 class ServerSessions(object):
     logger = None
     settlingTime = None
-    def __init__(self, settlingTime = 1.0):
+    probeEndTime = None
+    def __init__(self, settlingTime = 1.0, probeEndTime = 1E12):
         self.settlingTime = settlingTime
+        self.probeEndTime = probeEndTime
 
 class CBR(ServerSessions):
     __plugin__ = "server.CBR"
@@ -141,8 +143,8 @@ class VoIP(ServerSessions):
     maxDelay = None
     maxLossRatio = None
     def __init__(self, codecType = GSM(), comfortNoiseChoice = True,
-                 settlingTime = 1.0, trafficStartDelay = 0.0, parentLogger = None):
-        super(VoIP, self).__init__(settlingTime)
+                 settlingTime = 1.0, trafficStartDelay = 0.0, parentLogger = None, probeEndTime = 1E12):
+        super(VoIP, self).__init__(settlingTime, probeEndTime)
         self.codec = codecType
         self.stateTransition = openwns.distribution.Uniform(0.0, 1.0)
         self.comfortNoise = comfortNoiseChoice

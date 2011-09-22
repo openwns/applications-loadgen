@@ -42,7 +42,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.incoming.size'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Incoming packet size [Bit]'))
@@ -55,7 +55,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.outgoing.size'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Outgoing packet size [Bit]'))
@@ -68,7 +68,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.incoming.delay'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'End to end packet delay [s]'))
@@ -85,7 +85,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.outgoing.iat'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Packet iat [s]'))
@@ -98,7 +98,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.incoming.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed incoming bit throughput [Bit/s]'))
@@ -111,7 +111,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.outgoing.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed outgoing bit throughput [Bit/s]'))
@@ -124,7 +124,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.incoming.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed incoming packet throughput [Packets/s]'))
@@ -137,7 +137,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.outgoing.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed outgoing packet throughput [Packets/s]'))
@@ -150,7 +150,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average incoming bit throughput per session [Bit/s]'))
@@ -163,7 +163,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.outgoing.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average outgoing bit throughput per session [Bit/s]'))
@@ -176,7 +176,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average incoming packet throughput per session [Packets/s]'))
@@ -189,7 +189,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.outgoing.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Average outgoing packet throughput per session [Packets/s]'))
@@ -202,7 +202,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.duration'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.getLeafs().appendChildren(Moments(name = sourceName, description = 'Length of session [s]'))
@@ -214,7 +214,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.packetLoss'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
@@ -228,7 +228,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.delayLoss'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
@@ -242,7 +242,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.userSatisfaction'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
+    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
     servers.appendChildren(Moments(name = sourceName, description = 'Amount of satisfied users'))

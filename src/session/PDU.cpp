@@ -26,6 +26,7 @@
  ******************************************************************************/
 
 #include <APPLICATIONS/session/PDU.hpp>
+#include <APPLICATIONS/session/Session.hpp>
 
 using namespace applications::session;
 
@@ -36,7 +37,8 @@ PDU::PDU(Bit _packetSize, const wns::pyconfig::View& _pyco):
   fileLength(0.0),
   request(false),
   movieChoice(""),
-  packetNumber(0)
+  packetNumber(0),
+  sender(NULL)
 {
   getPCI()->setPDULength(_packetSize);
 }
@@ -61,6 +63,18 @@ bool
 PDU::getLastPacket()
 {
   return lastPacket;
+}
+
+applications::session::Session*
+PDU::getSender()
+{
+  return sender;
+}
+
+void
+PDU::setSender(applications::session::Session* s)
+{
+  sender = s;
 }
 
 void
