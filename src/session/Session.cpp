@@ -270,7 +270,7 @@ Session::onPDUReceivedByPeer(const wns::osi::PDUPtr& _pdu)
   wns::simulator::Time txTime;
   txTime = static_cast<applications::session::PDU*>(_pdu.getPtr())->getCreationTime();
 
-  if(now < probeEndTime && txTime > settlingTime)
+  if(txTime <= probeEndTime && txTime > settlingTime)
   {
     wns::simulator::Time delay = now - txTime;
 
@@ -325,7 +325,9 @@ Session::sessionProbesCalculation()
   if(outgoingPacketCounter > 0 && double(lost) / double(outgoingPacketCounter) < maxLossRatio)
     userSatisfactionProbe->put(1);
   else
+  {
     userSatisfactionProbe->put(0);
+  }
 
   if(receivedPacketNumber > 0)
   {
