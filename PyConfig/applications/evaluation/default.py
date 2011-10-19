@@ -35,13 +35,13 @@ from openwns.evaluation import *
 probePrefix = 'applications.'
 
 def installEvaluation(sim,
-                      serverIdList = [],
-                      clientIdList = [],
+                      loggingIds = [],
                       sessionTypes = set(applications.sesStrTypes),
                       settlingTime = 0.0):
 
     sourceName = probePrefix + 'packet.incoming.size'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -55,6 +55,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.outgoing.size'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -68,6 +69,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.incoming.delay'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -85,6 +87,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.outgoing.iat'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -98,6 +101,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.incoming.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -111,6 +115,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.outgoing.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -124,6 +129,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.incoming.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -137,6 +143,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.outgoing.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -150,6 +157,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -163,6 +171,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.outgoing.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -176,6 +185,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -189,6 +199,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.outgoing.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -202,6 +213,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.duration'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -214,6 +226,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.packetLoss'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -228,6 +241,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.delayLoss'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -242,6 +256,7 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.userSatisfaction'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers())
     clients = node.appendChildren(SeparateOnlyClients())
@@ -255,6 +270,7 @@ def installEvaluation(sim,
     # We do not need a SettlingTimeGuard here because connections should be established before the settling time
     sourceName = probePrefix + 'connectionEstablished'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
+    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     clients = node.appendChildren(SeparateOnlyClients())
     clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Number of established connections'))
     clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
