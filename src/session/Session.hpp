@@ -148,6 +148,9 @@ namespace applications {
 
       virtual void
       onPDUReceivedByPeer(const wns::osi::PDUPtr& _pdu);
+
+      virtual int
+      getId();
     
     protected:
 
@@ -171,6 +174,12 @@ namespace applications {
       /* used to restart a session if simulationtime left */
       applications::node::component::Component* component;
       int sessionIndex;
+
+      /* Same as NodeId */
+      int applId;
+
+      /* Peer Id */
+      int senderId;
 
       /* used to tell the server which connection has to be used,
 	 if there are more clients then servers, e.g. there are less
@@ -196,7 +205,6 @@ namespace applications {
       wns::probe::bus::ContextCollectorPtr measuringDurationProbe;
       wns::probe::bus::ContextCollectorPtr iatProbe;
       wns::probe::bus::ContextCollectorPtr packetLossProbe;
-      wns::probe::bus::ContextCollectorPtr delayLossProbe;
       wns::probe::bus::ContextCollectorPtr userSatisfactionProbe;
       wns::probe::bus::ContextCollectorPtr connectionProbe;
       SessionType sessionType;
@@ -230,7 +238,6 @@ namespace applications {
       Bit incomingPacketSizeCounter;
       Bit outgoingPacketSizeCounter;
       double packetLossRatio;
-      double delayLossRatio;
       double maxLossRatio;
 
       long int packetNumber;

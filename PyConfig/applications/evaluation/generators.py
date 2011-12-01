@@ -34,15 +34,21 @@ import applications
 class SeparateOnlyServers(ITreeNodeGenerator):
     """ Separate only Servers.
     """
+    def __init__(self, string = 'Server'):
+        self.string = string
+
     def __call__(self, pathname):
-        for node in Enumerated(by = 'Appl.StationType', keys = [1], names = ['Server'], format='%s')(pathname):
+        for node in Enumerated(by = 'Appl.StationType', keys = [1], names = [self.string], format='%s')(pathname):
             yield node
 
 class SeparateOnlyClients(ITreeNodeGenerator):
     """ Separate only Clients.
     """
+    def __init__(self, string = 'Server'):
+        self.string = string
+
     def __call__(self, pathname):
-        for node in Enumerated(by = 'Appl.StationType', keys = [2], names = ['Client'], format='%s')(pathname):
+        for node in Enumerated(by = 'Appl.StationType', keys = [2], names = [self.string], format='%s')(pathname):
             yield node
 
 class SeparateBySessionTypes(ITreeNodeGenerator):

@@ -26,6 +26,7 @@
  ******************************************************************************/
 
 #include <APPLICATIONS/session/Session.hpp>
+#include <boost/tuple/tuple.hpp>
 
 using namespace applications::session;
 
@@ -68,15 +69,15 @@ Session::Session(const wns::pyconfig::View& _pyco) :
   packetNumber(0),
   lastPacketNumber(0),
   packetLossCounter(0),
-  delayLossCounter(0),
   packetsDuringSettlingTime(0),
   receivedPackets(0),
   receivedOnTimePackets(0),
   packetLossRatio(0.0),
-  delayLossRatio(0.0),
   maxLossRatio(1.0),
   receivedPacketNumber(0),
-  packetFrom("Session")
+  packetFrom("Session"),
+  senderId(-1),
+  applId(-1)
 {
 }
 
@@ -147,7 +148,8 @@ Session::registerComponent(applications::node::component::Component* _component,
   m << ", Appl.SessionType=" << this->sessionType;
   MESSAGE_END();
 
-  localContext.addProvider(wns::probe::bus::contextprovider::Constant("Appl.Id", component->getNode()->getNodeID()));
+  applId = component->getNode()->getNodeID();
+  localContext.addProvider(wns::probe::bus::contextprovider::Constant("Appl.Id", applId));
   localContext.addProvider(wns::probe::bus::contextprovider::Constant("Appl.StationType", this->stationType));
   localContext.addProvider(wns::probe::bus::contextprovider::Constant("Appl.SessionType", this->sessionType));
 
@@ -179,8 +181,6 @@ Session::registerComponent(applications::node::component::Component* _component,
   iatProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.packet.outgoing.iat"));
 
   packetLossProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.session.incoming.packetLoss"));
-
-  delayLossProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.session.incoming.delayLoss"));
 
   userSatisfactionProbe = wns::probe::bus::ContextCollectorPtr(new wns::probe::bus::ContextCollector(localContext, "applications.session.userSatisfaction"));
 
@@ -219,10 +219,14 @@ Session::incomingProbesCalculation(const wns::osi::PDUPtr& _pdu)
 
       applications::session::Session* sender = static_cast<applications::session::PDU*>(_pdu.getPtr())->getSender();
       if(sender != NULL)
+      {
         sender->onPDUReceivedByPeer(_pdu);
+        assure(senderId == -1 || senderId == sender->getId(), "Receiving from different peers.");
+        senderId = sender->getId();
+      }
 
-      packetDelayProbe->put(packetDelay);
-      incomingPacketSizeProbe->put(incomingPacketSize);
+      packetDelayProbe->put(packetDelay, boost::make_tuple("Appl.SenderId", senderId));
+      incomingPacketSizeProbe->put(incomingPacketSize, boost::make_tuple("Appl.SenderId", senderId));
 
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PDU received with a size of " << _pdu.getPtr()->getLengthInBits()
 		     << " bits and a delay of " << packetDelay << ". Now recieved a total of "
@@ -245,14 +249,6 @@ Session::incomingProbesCalculation(const wns::osi::PDUPtr& _pdu)
 	  lastPacketNumber = receivedPacketNumber;
 	}
 
-      if(packetDelay > maxDelay)
-	{
-	  packetLossCounter += 1; 
-      delayLossCounter += 1;
-	}
-
-      packetLossRatio = (double)packetLossCounter / (double)(receivedPacketNumber - packetsDuringSettlingTime);
-      delayLossRatio = (double)delayLossCounter / (double)(receivedPacketNumber - packetsDuringSettlingTime);
     }
   else
     {
@@ -282,6 +278,12 @@ Session::onPDUReceivedByPeer(const wns::osi::PDUPtr& _pdu)
   }   
 }
 
+int
+Session::getId()
+{
+  return applId;
+}
+
 void
 Session::outgoingProbesCalculation(const wns::osi::PDUPtr& pdu)
 {
@@ -299,7 +301,8 @@ Session::outgoingProbesCalculation(const wns::osi::PDUPtr& pdu)
       windowedOutgoingPacketThroughput++;
       windowedOutgoingBitThroughput += outgoingPacketSize;
 
-      outgoingPacketSizeProbe->put(outgoingPacketSize);
+      outgoingPacketSizeProbe->put(outgoingPacketSize, 
+        boost::make_tuple("Appl.SenderId", senderId));
     }
   else
     {
@@ -312,21 +315,25 @@ Session::sessionProbesCalculation()
 {
   measuringDuration = wns::simulator::getEventScheduler()->getTime() - settlingTime;
   MESSAGE_SINGLE(NORMAL, logger, "APPL: SessionDuration = " << measuringDuration << ".");
-  measuringDurationProbe->put(measuringDuration);
+  measuringDurationProbe->put(measuringDuration, boost::make_tuple("Appl.SenderId", senderId));
 
-  sessionIncomingBitThroughputProbe->put(incomingPacketSizeCounter / measuringDuration);
-  sessionIncomingPacketThroughputProbe->put(incomingPacketCounter / measuringDuration);
+  sessionIncomingBitThroughputProbe->put(incomingPacketSizeCounter / measuringDuration, 
+    boost::make_tuple("Appl.SenderId", senderId));
+  sessionIncomingPacketThroughputProbe->put(incomingPacketCounter / measuringDuration, 
+    boost::make_tuple("Appl.SenderId", senderId));
 
-  sessionOutgoingBitThroughputProbe->put(outgoingPacketSizeCounter / measuringDuration);
-  sessionOutgoingPacketThroughputProbe->put(outgoingPacketCounter / measuringDuration);
+  sessionOutgoingBitThroughputProbe->put(outgoingPacketSizeCounter / measuringDuration, 
+    boost::make_tuple("Appl.SenderId", senderId));
+  sessionOutgoingPacketThroughputProbe->put(outgoingPacketCounter / measuringDuration, 
+    boost::make_tuple("Appl.SenderId", senderId));
 
   long int lost = outgoingPacketCounter - receivedOnTimePackets;
 
   if(outgoingPacketCounter > 0 && double(lost) / double(outgoingPacketCounter) < maxLossRatio)
-    userSatisfactionProbe->put(1);
+    userSatisfactionProbe->put(1, boost::make_tuple("Appl.SenderId", senderId));
   else
   {
-    userSatisfactionProbe->put(0);
+    userSatisfactionProbe->put(0, boost::make_tuple("Appl.SenderId", senderId));
   }
 
   if(receivedPacketNumber > 0)
@@ -334,8 +341,16 @@ Session::sessionProbesCalculation()
     MESSAGE_SINGLE(NORMAL, logger, "APPL: At the end a total of " << packetLossCounter
         << " packets out of " << (receivedPacketNumber-packetsDuringSettlingTime) << " are lost.\n");
 
-    packetLossProbe->put(packetLossRatio);
-    delayLossProbe->put(delayLossRatio);
+    if(outgoingPacketCounter > 0)
+    {
+        packetLossProbe->put(double(lost) / double(outgoingPacketCounter), 
+            boost::make_tuple("Appl.SenderId", senderId));
+    }
+    else
+    {
+        packetLossProbe->put(1.0, 
+            boost::make_tuple("Appl.SenderId", senderId));
+    }
   }
 }
 

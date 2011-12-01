@@ -41,10 +41,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.incoming.size'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Uplink"))
+    clients = node.appendChildren(SeparateOnlyClients("Donwlink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Incoming packet size [Bit]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Incoming packet size [Bit]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -55,10 +56,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.outgoing.size'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Donwlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Outgoing packet size [Bit]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Outgoing packet size [Bit]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -69,10 +71,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'packet.incoming.delay'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Uplink"))
+    clients = node.appendChildren(SeparateOnlyClients("Downlink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'End to end packet delay [s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'End to end packet delay [s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -81,16 +84,24 @@ def installEvaluation(sim,
                                               maxXValue = 0.50, resolution = 500, minXValue = 0.0))
     clients.getLeafs().appendChildren(PDF(name = sourceName, description = 'End to end packet delay [s]',
                                               maxXValue = 0.50, resolution = 5000, minXValue = 0.0))
-    #servers.getLeafs().appendChildren(TimeSeries(name = sourceName, description = 'End to end packet delay [s]'))
-    #clients.getLeafs().appendChildren(TimeSeries(name = sourceName, description = 'End to end packet delay [s]'))
-    
+    servers.getLeafs().appendChildren(Plot2D(xDataKey = 'Appl.SenderId',
+                                            minX = 0,
+                                            maxX = max(loggingIds) + 1,
+                                            resolution = max(loggingIds) + 1,
+                                            statEvals = ['mean','deviation','max']))
+    clients.getLeafs().appendChildren(Plot2D(xDataKey = 'wns.node.Node.id',
+                                            minX = 0,
+                                            maxX = max(loggingIds) + 1,
+                                            resolution = max(loggingIds) + 1,
+                                            statEvals = ['mean','deviation','max']))
 
     sourceName = probePrefix + 'packet.outgoing.iat'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Downlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Packet iat [s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Packet iat [s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -101,10 +112,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.incoming.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Uplink"))
+    clients = node.appendChildren(SeparateOnlyClients("Downlink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed incoming bit throughput [Bit/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average windowed incoming bit throughput [Bit/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -115,10 +127,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.outgoing.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Downlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed outgoing bit throughput [Bit/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average windowed outgoing bit throughput [Bit/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -129,10 +142,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.incoming.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Uplink"))
+    clients = node.appendChildren(SeparateOnlyClients("Downlink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed incoming packet throughput [Packets/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average windowed incoming packet throughput [Packets/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -143,10 +157,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'window.outgoing.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Downlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average windowed outgoing packet throughput [Packets/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average windowed outgoing packet throughput [Packets/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -157,10 +172,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Uplink"))
+    clients = node.appendChildren(SeparateOnlyClients("Downlink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average incoming bit throughput per session [Bit/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average incoming bit throughput per session [Bit/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -171,10 +187,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.outgoing.bitThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Downlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average outgoing bit throughput per session [Bit/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average outgoing bit throughput per session [Bit/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -185,10 +202,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Uplink"))
+    clients = node.appendChildren(SeparateOnlyClients("Downlink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average incoming packet throughput per session [Packets/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average incoming packet throughput per session [Packets/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -199,10 +217,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.outgoing.packetThroughput'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Downlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Average outgoing packet throughput per session [Packets/s]'))
     clients.appendChildren(Moments(name = sourceName, description = 'Average outgoing packet throughput per session [Packets/s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -213,10 +232,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.duration'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Uplink"))
+    clients = node.appendChildren(SeparateOnlyClients("Downlink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.getLeafs().appendChildren(Moments(name = sourceName, description = 'Length of session [s]'))
     clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Length of session [s]'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -226,10 +246,11 @@ def installEvaluation(sim,
 
     sourceName = probePrefix + 'session.incoming.packetLoss'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Downlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
                                               maxXValue = 1.0, resolution = 1000, minXValue = 0.0))
     clients.appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
@@ -238,28 +259,24 @@ def installEvaluation(sim,
     clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
     servers.getLeafs().appendChildren(Moments(name = sourceName, description = 'Incoming packets loss ratio'))
     clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Incoming packets loss ratio'))
-
-    sourceName = probePrefix + 'session.incoming.delayLoss'
-    node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
-    servers.appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
-                                              maxXValue = 1.0, resolution = 1000, minXValue = 0.0))
-    clients.appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
-                                              maxXValue = 1.0, resolution = 1000, minXValue = 0.0))
-    servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
-    clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
-    servers.getLeafs().appendChildren(Moments(name = sourceName, description = 'Incoming packets loss ratio'))
-    clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Incoming packets loss ratio'))
+    servers.getLeafs().appendChildren(Plot2D(xDataKey = 'Appl.SenderId',
+                                            minX = 0,
+                                            maxX = max(loggingIds) + 1,
+                                            resolution = max(loggingIds) + 1,
+                                            statEvals = ['mean']))    
+    clients.getLeafs().appendChildren(Plot2D(xDataKey = 'wns.node.Node.id',
+                                            minX = 0,
+                                            maxX = max(loggingIds) + 1,
+                                            resolution = max(loggingIds) + 1,
+                                            statEvals = ['mean']))
 
     sourceName = probePrefix + 'session.userSatisfaction'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
-    servers = node.appendChildren(SeparateOnlyServers())
-    clients = node.appendChildren(SeparateOnlyClients())
+    servers = node.appendChildren(SeparateOnlyServers("Downlink"))
+    clients = node.appendChildren(SeparateOnlyClients("Uplink"))
+    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
     servers.appendChildren(Moments(name = sourceName, description = 'Amount of satisfied users'))
     clients.appendChildren(Moments(name = sourceName, description = 'Amount of satisfied users'))
     servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -271,7 +288,6 @@ def installEvaluation(sim,
     sourceName = probePrefix + 'connectionEstablished'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
     node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    clients = node.appendChildren(SeparateOnlyClients())
-    clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Number of established connections'))
-    clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
-    clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Number of established connections'))
+    node.getLeafs().appendChildren(Moments(name = sourceName, description = 'Number of established connections'))
+    node.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
+    node.getLeafs().appendChildren(Moments(name = sourceName, description = 'Number of established connections'))
