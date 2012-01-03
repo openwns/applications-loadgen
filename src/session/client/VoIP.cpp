@@ -36,7 +36,8 @@ STATIC_FACTORY_REGISTER_WITH_CREATOR(applications::session::client::VoIP,
 VoIP::VoIP(const wns::pyconfig::View& _pyco) :
   Session(_pyco),
   stateTransitionDistribution(NULL),
-  cnCounter(0)
+  cnCounter(0),
+  receivedFirst(false)
 {
   wns::pyconfig::View sTVConfig(_pyco, "stateTransition");
   std::string sTVName = sTVConfig.get<std::string>("__plugin__");
@@ -96,13 +97,15 @@ VoIP::onData(const wns::osi::PDUPtr& _pdu)
 
   applications::session::Session::incomingProbesCalculation(_pdu);
 
-  if((receivedPacketNumber == 1) && (state != sessionended))
+  if((!receivedFirst) && (state != sessionended))
     {
+      receivedFirst = true;
       state = running;
 
       onTimeout(sendtimeout);
       voIPState = active;
       setTimeout(statetransitiontimeout, 0.02);
+      cancelTimeout(statetimeout);
     }
 }
 
@@ -212,8 +215,11 @@ VoIP::onTimeout(const Timeout& _t)
       applicationPDU->setCreationTime(wns::simulator::getEventScheduler()->getTime());
 
       packetSize = comfortNoisePacketSize;
+      if(packetNumber < 1)
+          packetNumber = 1;
+      else
+          packetNumber++;
 
-      packetNumber = 1;
       applicationPDU->setPacketNumber(packetNumber, packetFrom);
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PacketNumber = " << packetNumber << ".");
 
@@ -223,6 +229,10 @@ VoIP::onTimeout(const Timeout& _t)
       connection->sendData(pdu);
 
       state = idle;
+
+      /* Retry after 0.5s if no answer from server */
+      /* ToDo: Should match server traffic start delay */
+      setTimeout(statetimeout, 0.5);
     }
   else
     {

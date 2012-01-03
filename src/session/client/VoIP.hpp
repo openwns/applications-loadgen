@@ -61,6 +61,7 @@ namespace applications { namespace session { namespace client {
 	/* According to "IMT-Adv. ITU-R M.2135" every 20ms it is decided if a state transition takes place. */
 	wns::distribution::Distribution* stateTransitionDistribution;
 	int cnCounter;
+    bool receivedFirst;
 
 	applications::session::client::VoIPState voIPState;
       };
