@@ -151,6 +151,9 @@ namespace applications {
 
       virtual int
       getId();
+
+      virtual int
+      getCellId(int senderId);
     
     protected:
 

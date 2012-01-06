@@ -225,8 +225,10 @@ Session::incomingProbesCalculation(const wns::osi::PDUPtr& _pdu)
         senderId = sender->getId();
       }
 
-      packetDelayProbe->put(packetDelay, boost::make_tuple("Appl.SenderId", senderId));
-      incomingPacketSizeProbe->put(incomingPacketSize, boost::make_tuple("Appl.SenderId", senderId));
+      packetDelayProbe->put(packetDelay, boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
+      incomingPacketSizeProbe->put(incomingPacketSize, boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
 
       MESSAGE_SINGLE(NORMAL, logger, "APPL: PDU received with a size of " << _pdu.getPtr()->getLengthInBits()
 		     << " bits and a delay of " << packetDelay << ". Now recieved a total of "
@@ -302,7 +304,8 @@ Session::outgoingProbesCalculation(const wns::osi::PDUPtr& pdu)
       windowedOutgoingBitThroughput += outgoingPacketSize;
 
       outgoingPacketSizeProbe->put(outgoingPacketSize, 
-        boost::make_tuple("Appl.SenderId", senderId));
+        boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
     }
   else
     {
@@ -315,25 +318,32 @@ Session::sessionProbesCalculation()
 {
   measuringDuration = wns::simulator::getEventScheduler()->getTime() - settlingTime;
   MESSAGE_SINGLE(NORMAL, logger, "APPL: SessionDuration = " << measuringDuration << ".");
-  measuringDurationProbe->put(measuringDuration, boost::make_tuple("Appl.SenderId", senderId));
+  measuringDurationProbe->put(measuringDuration, boost::make_tuple("Appl.SenderId", senderId,
+    "Appl.CellId", getCellId(senderId)));
 
   sessionIncomingBitThroughputProbe->put(incomingPacketSizeCounter / measuringDuration, 
-    boost::make_tuple("Appl.SenderId", senderId));
+    boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
   sessionIncomingPacketThroughputProbe->put(incomingPacketCounter / measuringDuration, 
-    boost::make_tuple("Appl.SenderId", senderId));
+    boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
 
   sessionOutgoingBitThroughputProbe->put(outgoingPacketSizeCounter / measuringDuration, 
-    boost::make_tuple("Appl.SenderId", senderId));
+    boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
   sessionOutgoingPacketThroughputProbe->put(outgoingPacketCounter / measuringDuration, 
-    boost::make_tuple("Appl.SenderId", senderId));
+    boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
 
   long int lost = outgoingPacketCounter - receivedOnTimePackets;
 
   if(outgoingPacketCounter > 0 && double(lost) / double(outgoingPacketCounter) < maxLossRatio)
-    userSatisfactionProbe->put(1, boost::make_tuple("Appl.SenderId", senderId));
+    userSatisfactionProbe->put(1, boost::make_tuple("Appl.SenderId", senderId, 
+        "Appl.CellId", getCellId(senderId)));
   else
   {
-    userSatisfactionProbe->put(0, boost::make_tuple("Appl.SenderId", senderId));
+    userSatisfactionProbe->put(0, boost::make_tuple("Appl.SenderId", senderId, 
+        "Appl.CellId", getCellId(senderId)));
   }
 
   if(receivedPacketNumber > 0)
@@ -344,12 +354,14 @@ Session::sessionProbesCalculation()
     if(outgoingPacketCounter > 0)
     {
         packetLossProbe->put(double(lost) / double(outgoingPacketCounter), 
-            boost::make_tuple("Appl.SenderId", senderId));
+            boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
     }
     else
     {
         packetLossProbe->put(1.0, 
-            boost::make_tuple("Appl.SenderId", senderId));
+            boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
     }
   }
 }
@@ -398,3 +410,24 @@ Session::doToString() const
     ss << "session = " << this->sessionType << std::endl;
     return ss.str();
 }
+
+int
+Session::getCellId(int senderId)
+{
+    if(wns::simulator::getRegistry()->knows("DLLAssoc"))
+    {
+        std::map<int, int> assoc;
+        assoc = wns::simulator::getRegistry()->find<std::map<int, int> >("DLLAssoc");
+        if(assoc.find(senderId) != assoc.end())
+        {
+            return assoc[senderId];
+        }
+        else
+        if(assoc.find(applId) != assoc.end())
+        {
+            return assoc[applId];
+        }
+    }
+    return -1;
+}
+

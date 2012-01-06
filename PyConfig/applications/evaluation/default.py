@@ -38,15 +38,24 @@ def installEvaluation(sim,
                       loggingIds = [],
                       sessionTypes = set(applications.sesStrTypes),
                       settlingTime = 0.0,
-                      perSessionType = False):
+                      perSessionType = False,
+                      useCellId = False):
+
+    if(useCellId):
+        nodeString = "Appl.CellId"
+        senderString = "Appl.CellId"
+    else:
+        nodeString = "wns.node.Node.id"
+        senderString = "Appl.SenderId"
+        
 
     sourceName = probePrefix + 'packet.incoming.size'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Uplink"))
     clients = node.appendChildren(SeparateOnlyClients("Donwlink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -58,8 +67,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Donwlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -71,8 +80,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Uplink"))
     clients = node.appendChildren(SeparateOnlyClients("Downlink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -80,12 +89,12 @@ def installEvaluation(sim,
                                               maxXValue = 0.50, resolution = 500, minXValue = 0.0))
     clients.getLeafs().appendChildren(PDF(name = sourceName, description = 'End to end packet delay [s]',
                                               maxXValue = 0.50, resolution = 5000, minXValue = 0.0))
-    servers.getLeafs().appendChildren(Plot2D(xDataKey = 'Appl.SenderId',
+    servers.getLeafs().appendChildren(Plot2D(xDataKey = senderString,
                                             minX = 0,
                                             maxX = max(loggingIds) + 1,
                                             resolution = max(loggingIds) + 1,
                                             statEvals = ['mean','deviation','max']))
-    clients.getLeafs().appendChildren(Plot2D(xDataKey = 'wns.node.Node.id',
+    clients.getLeafs().appendChildren(Plot2D(xDataKey = nodeString,
                                             minX = 0,
                                             maxX = max(loggingIds) + 1,
                                             resolution = max(loggingIds) + 1,
@@ -96,8 +105,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Downlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -110,8 +119,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Uplink"))
     clients = node.appendChildren(SeparateOnlyClients("Downlink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -123,8 +132,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Downlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -136,8 +145,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Uplink"))
     clients = node.appendChildren(SeparateOnlyClients("Downlink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -149,8 +158,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Downlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -162,8 +171,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Uplink"))
     clients = node.appendChildren(SeparateOnlyClients("Downlink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -175,8 +184,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Downlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -188,8 +197,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Uplink"))
     clients = node.appendChildren(SeparateOnlyClients("Downlink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -201,8 +210,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Downlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -214,8 +223,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Uplink"))
     clients = node.appendChildren(SeparateOnlyClients("Downlink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -227,8 +236,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Downlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by=nodeString, ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by=senderString, ifIn = loggingIds))
     if(perSessionType):
         servers.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
         clients.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
@@ -236,12 +245,12 @@ def installEvaluation(sim,
                                               maxXValue = 1.0, resolution = 1000, minXValue = 0.0))
     clients.getLeafs().appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
                                               maxXValue = 1.0, resolution = 1000, minXValue = 0.0))
-    servers.getLeafs().appendChildren(Plot2D(xDataKey = 'Appl.SenderId',
+    servers.getLeafs().appendChildren(Plot2D(xDataKey = senderString,
                                             minX = 0,
                                             maxX = max(loggingIds) + 1,
                                             resolution = max(loggingIds) + 1,
                                             statEvals = ['mean']))    
-    clients.getLeafs().appendChildren(Plot2D(xDataKey = 'wns.node.Node.id',
+    clients.getLeafs().appendChildren(Plot2D(xDataKey = nodeString,
                                             minX = 0,
                                             maxX = max(loggingIds) + 1,
                                             resolution = max(loggingIds) + 1,
@@ -252,8 +261,8 @@ def installEvaluation(sim,
     node = node.getLeafs().appendChildren(SettlingTimeGuard(settlingTime))
     servers = node.appendChildren(SeparateOnlyServers("Downlink"))
     clients = node.appendChildren(SeparateOnlyClients("Uplink"))
-    clients.getLeafs().appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
-    servers.getLeafs().appendChildren(Accept(by='Appl.SenderId', ifIn = loggingIds))
+    clients.getLeafs().appendChildren(Accept(by='Appl.CellId', ifIn = loggingIds))
+    servers.getLeafs().appendChildren(Accept(by='Appl.CellId', ifIn = loggingIds))
     servers.getLeafs().appendChildren(Moments(name = sourceName, description = 'Amount of satisfied users'))
     clients.getLeafs().appendChildren(Moments(name = sourceName, description = 'Amount of satisfied users'))
     if(perSessionType):
@@ -265,7 +274,7 @@ def installEvaluation(sim,
     # We do not need a SettlingTimeGuard here because connections should be established before the settling time
     sourceName = probePrefix + 'connectionEstablished'
     node = openwns.evaluation.createSourceNode(sim, sourceName)
-    node = node.appendChildren(Accept(by='wns.node.Node.id', ifIn = loggingIds))
+    node = node.appendChildren(Accept(by=nodeString, ifIn = loggingIds))
     if(perSessionType):
         node.getLeafs().appendChildren(SeparateBySessionTypes(sessionTypes))
     node.getLeafs().appendChildren(Moments(name = sourceName, description = 'Number of established connections'))
