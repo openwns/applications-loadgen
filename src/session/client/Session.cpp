@@ -78,12 +78,14 @@ Session::onShutdown()
     if(establishedAt > settlingTime)
     {
       MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection established but after probing started!");
-      connectionProbe->put(0);
+      connectionProbe->put(0, 
+            boost::make_tuple("Appl.CellId", getCellId(senderId)));
     }
     else
     {
       MESSAGE_SINGLE(NORMAL, logger, "APPL: Connection was succesfully established!");
-      connectionProbe->put(1);
+      connectionProbe->put(1, 
+            boost::make_tuple("Appl.CellId", getCellId(senderId)));
     }        
   }
   else

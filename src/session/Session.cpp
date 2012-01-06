@@ -95,11 +95,19 @@ Session::onTimeout(const Timeout& _t)
 
   if(now > settlingTime)
     {
-      windowIncomingBitThroughputProbe->put(windowedIncomingBitThroughput);
-      windowIncomingPacketThroughputProbe->put(windowedIncomingPacketThroughput);
+      windowIncomingBitThroughputProbe->put(windowedIncomingBitThroughput, 
+            boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
+      windowIncomingPacketThroughputProbe->put(windowedIncomingPacketThroughput, 
+            boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
 
-      windowOutgoingBitThroughputProbe->put(windowedOutgoingBitThroughput);
-      windowOutgoingPacketThroughputProbe->put(windowedOutgoingPacketThroughput);
+      windowOutgoingBitThroughputProbe->put(windowedOutgoingBitThroughput, 
+            boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
+      windowOutgoingPacketThroughputProbe->put(windowedOutgoingPacketThroughput, 
+            boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
 
       windowedIncomingBitThroughput = 0.0;
       windowedIncomingPacketThroughput = 0;
@@ -379,7 +387,9 @@ Session::iatProbesCalculation()
 
 	  MESSAGE_SINGLE(NORMAL, logger, "APPL: iat = " << iatEnd << ".");
 
-	  iatProbe->put(iatEnd);
+	  iatProbe->put(iatEnd, 
+            boost::make_tuple("Appl.SenderId", senderId,
+                "Appl.CellId", getCellId(senderId)));
 
 	  iatStart = wns::simulator::getEventScheduler()->getTime();
 	}

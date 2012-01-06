@@ -38,15 +38,19 @@ def installEvaluation(sim,
                       loggingIds = [],
                       sessionTypes = set(applications.sesStrTypes),
                       settlingTime = 0.0,
+                      numNodes = 100,
                       perSessionType = False,
                       useCellId = False):
 
     if(useCellId):
         nodeString = "Appl.CellId"
         senderString = "Appl.CellId"
+        maxId = numNodes + len(loggingIds) + 2;
     else:
         nodeString = "wns.node.Node.id"
         senderString = "Appl.SenderId"
+        maxId = max(loggingIds) + 1;
+
         
 
     sourceName = probePrefix + 'packet.incoming.size'
@@ -89,15 +93,15 @@ def installEvaluation(sim,
                                               maxXValue = 0.50, resolution = 500, minXValue = 0.0))
     clients.getLeafs().appendChildren(PDF(name = sourceName, description = 'End to end packet delay [s]',
                                               maxXValue = 0.50, resolution = 5000, minXValue = 0.0))
-    servers.getLeafs().appendChildren(Plot2D(xDataKey = senderString,
+    servers.getLeafs().appendChildren(Plot2D(xDataKey = "Appl.SenderId",
                                             minX = 0,
-                                            maxX = max(loggingIds) + 1,
-                                            resolution = max(loggingIds) + 1,
+                                            maxX = maxId,
+                                            resolution = maxId,
                                             statEvals = ['mean','deviation','max']))
-    clients.getLeafs().appendChildren(Plot2D(xDataKey = nodeString,
+    clients.getLeafs().appendChildren(Plot2D(xDataKey = "wns.node.Node.id",
                                             minX = 0,
-                                            maxX = max(loggingIds) + 1,
-                                            resolution = max(loggingIds) + 1,
+                                            maxX = maxId,
+                                            resolution = maxId,
                                             statEvals = ['mean','deviation','max']))
 
     sourceName = probePrefix + 'packet.outgoing.iat'
@@ -245,15 +249,15 @@ def installEvaluation(sim,
                                               maxXValue = 1.0, resolution = 1000, minXValue = 0.0))
     clients.getLeafs().appendChildren(PDF(name = sourceName, description = 'Incoming packet loss ratio',
                                               maxXValue = 1.0, resolution = 1000, minXValue = 0.0))
-    servers.getLeafs().appendChildren(Plot2D(xDataKey = senderString,
+    servers.getLeafs().appendChildren(Plot2D(xDataKey = "Appl.SenderId",
                                             minX = 0,
-                                            maxX = max(loggingIds) + 1,
-                                            resolution = max(loggingIds) + 1,
+                                            maxX = maxId,
+                                            resolution = maxId,
                                             statEvals = ['mean']))    
-    clients.getLeafs().appendChildren(Plot2D(xDataKey = nodeString,
+    clients.getLeafs().appendChildren(Plot2D(xDataKey = "wns.node.Node.id",
                                             minX = 0,
-                                            maxX = max(loggingIds) + 1,
-                                            resolution = max(loggingIds) + 1,
+                                            maxX = maxId,
+                                            resolution = maxId,
                                             statEvals = ['mean']))
 
     sourceName = probePrefix + 'session.userSatisfaction'
